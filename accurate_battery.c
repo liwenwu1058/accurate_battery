@@ -186,21 +186,21 @@ int main(int argc, char *argv[])
         printf_with_time("请传入真实电量文件路径，勿传入多余参数！");
         exit(20);
     }
-    else if(strcmp(argv[1], "/sys/class/oplus_chg/battery/real_capacity") != 0 && strcmp(argv[1], "/sys/class/power_supply/bms/capacity_rw") != 0)
+    else if(strcmp(argv[1], "/sys/class/oplus_chg/battery/chip_soc") != 0 && strcmp(argv[1], "/sys/class/oplus_chg/battery/real_capacity") != 0)
     {
         printf_with_time("不支持的真实电量文件路径：%s，程序强制退出！", argv[1]);
         exit(6);
     }
-    check_file("/sys/class/power_supply/battery/status");
-    check_file("/sys/class/power_supply/battery/current_now");
-    check_file("/sys/class/power_supply/battery/capacity");
+    check_file("/sys/class/oplus_chg/battery/status");
+    check_file("/sys/class/oplus_chg/battery/current_now");
+    check_file("/sys/class/oplus_chg/battery/capacity");
     check_file(argv[1]);
-    charge_full=(strcmp(argv[1], "/sys/class/oplus_chg/battery/real_capacity") == 0)?100:10000;
+    charge_full=(strcmp(argv[1], "/sys/class/oplus_chg/battery/chip_soc") == 0)?100:10000;
     while(1)
     {
-        read_file("/sys/class/power_supply/battery/current_now", current_char, sizeof(current_char));
+        read_file("/sys/class/oplus_chg/battery/current_now", current_char, sizeof(current_char));
         current = atoi(current_char);
-        read_file("/sys/class/power_supply/battery/status", charge_status, sizeof(charge_status));
+        read_file("/sys/class/oplus_chg/battery/status", charge_status, sizeof(charge_status));
         if(access("/data/adb/accurate_battery/no_trickle", F_OK) == 0 && no_trickle != 1)
         {
             printf_with_time("/data/adb/accurate_battery/no_trickle文件存在，不将涓流充电过程加入电量统计");
@@ -220,11 +220,11 @@ int main(int argc, char *argv[])
             full=1;
             read_file(argv[1], battery, sizeof(battery));
             charge_full=atoi(battery);
-            set_value("/sys/class/power_supply/battery/capacity", "100");
+            set_value("/sys/class/oplus_chg/battery/capacity", "100");
             sleep(5);
             continue;
         }
-        if(strcmp(argv[1], "/sys/class/oplus_chg/battery/real_capacity") == 0)
+        if(strcmp(argv[1], "/sys/class/oplus_chg/battery/chip_soc") == 0)
         {
             read_file(argv[1], battery, sizeof(battery));
             power=atoi(battery)+100-charge_full;
@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
                 else full=0;
             }
         }
-        else if(strcmp(argv[1], "/sys/class/power_supply/bms/capacity_raw") == 0)
+        else if(strcmp(argv[1], "/sys/class/oplus_chg/battery/real_capacity") == 0)
         {
             read_file(argv[1], battery, sizeof(battery));
             power=atoi(battery)+10000-charge_full+50;
@@ -254,7 +254,7 @@ int main(int argc, char *argv[])
                 else snprintf(battery, 2, "0");
             }
         }
-        set_value("/sys/class/power_supply/battery/capacity", battery);
+        set_value("/sys/class/oplus_chg/battery/capacity", battery);
         sleep(5);
     }
     return 0;
