@@ -10,9 +10,9 @@ check_file()
         rm -rf ${MODPATH}
         exit 1
     fi
-    if [[ -f /sys/class/power_supply/bms/real_capacity ]]; then
-        ui_print " - 检测到/sys/class/power_supply/bms/real_capacity文件存在，使用此文件作为真实电量文件"
-        sed -i 's|^capacity_file=.*|capacity_file=/sys/class/power_supply/bms/real_capacity|g' ${TMPDIR}/service.sh
+    if [[ -f /sys/class/oplus_chg/battery/real_capacity ]]; then
+        ui_print " - 检测到/sys/class/oplus_chg/battery/real_capacity文件存在，使用此文件作为真实电量文件"
+        sed -i 's|^capacity_file=.*|capacity_file=/sys/class/oplus_chg/battery/real_capacity|g' ${TMPDIR}/service.sh
     elif [[ -f /sys/class/power_supply/bms/capacity_raw ]]; then
         ui_print " - 检测到/sys/class/power_supply/bms/capacity_raw文件存在，使用此文件作为真实电量文件"
         sed -i 's|^capacity_file=.*|capacity_file=/sys/class/power_supply/bms/capacity_raw|g' ${TMPDIR}/service.sh
