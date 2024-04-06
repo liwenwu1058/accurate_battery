@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
         printf_with_time("请传入真实电量文件路径，勿传入多余参数！");
         exit(20);
     }
-    else if(strcmp(argv[1], "/sys/class/power_supply/bms/real_capacity") != 0 && strcmp(argv[1], "/sys/class/power_supply/bms/capacity_rw") != 0)
+    else if(strcmp(argv[1], "/sys/class/oplus_chg/battery/real_capacity") != 0 && strcmp(argv[1], "/sys/class/power_supply/bms/capacity_rw") != 0)
     {
         printf_with_time("不支持的真实电量文件路径：%s，程序强制退出！", argv[1]);
         exit(6);
@@ -195,7 +195,7 @@ int main(int argc, char *argv[])
     check_file("/sys/class/power_supply/battery/current_now");
     check_file("/sys/class/power_supply/battery/capacity");
     check_file(argv[1]);
-    charge_full=(strcmp(argv[1], "/sys/class/power_supply/bms/real_capacity") == 0)?100:10000;
+    charge_full=(strcmp(argv[1], "/sys/class/oplus_chg/battery/real_capacity") == 0)?100:10000;
     while(1)
     {
         read_file("/sys/class/power_supply/battery/current_now", current_char, sizeof(current_char));
@@ -224,7 +224,7 @@ int main(int argc, char *argv[])
             sleep(5);
             continue;
         }
-        if(strcmp(argv[1], "/sys/class/power_supply/bms/real_capacity") == 0)
+        if(strcmp(argv[1], "/sys/class/oplus_chg/battery/real_capacity") == 0)
         {
             read_file(argv[1], battery, sizeof(battery));
             power=atoi(battery)+100-charge_full;
